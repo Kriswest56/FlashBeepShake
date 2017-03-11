@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +18,8 @@ import butterknife.OnTouch;
  */
 public class ShakeFragment extends Fragment {
 
-    CommunicationInterface mCallback;
+    private CommunicationInterface mCallback;
+    private Vibrator mVibrator;
 
     @Override
     public void onActivityCreated(Bundle outState) {
@@ -49,28 +49,41 @@ public class ShakeFragment extends Fragment {
 
     }
 
+    /**
+     * OnTouch event to vibrate or stop vibrating phone
+     *
+     * @param event - Passes MotionEvent
+     * @return - Returns Boolean
+     */
     @OnTouch(R.id.quake_image)
     public boolean vibrate(MotionEvent event){
 
-        Vibrator vibrator = (Vibrator) this.getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        mVibrator = (Vibrator) this.getActivity().getSystemService(Context.VIBRATOR_SERVICE);
 
         switch(event.getAction()){
 
             case MotionEvent.ACTION_DOWN:
 
-                vibrator.vibrate(1000*60*10);
+                mVibrator.vibrate(1000*60*10);
                 break;
 
             case MotionEvent.ACTION_UP:
 
-                vibrator.cancel();
+                mVibrator.cancel();
                 break;
 
         }
 
+        mVibrator = null;
         return true;
     }
 
+    /**
+     * Passes event via callback to parent activity
+     *
+     * @param event - Passes MotionEvent
+     * @return - Returns Boolean
+     */
     @OnTouch(R.id.shakeLayout)
     public boolean swipeEvent(MotionEvent event){
 
